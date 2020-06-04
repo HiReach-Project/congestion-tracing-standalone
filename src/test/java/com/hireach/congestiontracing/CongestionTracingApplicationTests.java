@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
 
+import java.time.Instant;
+
 @SpringBootTest
 class CongestionTracingApplicationTests {
 
@@ -15,6 +17,8 @@ class CongestionTracingApplicationTests {
     @Test
     @Rollback(value = false)
     void contextLoads() {
+        Instant instant = Instant.now();
+        System.out.println(instant);
         traceService.saveTrace();
     }
 

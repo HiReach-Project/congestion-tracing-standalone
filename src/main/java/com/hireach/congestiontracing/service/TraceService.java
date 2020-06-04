@@ -18,8 +18,8 @@ public class TraceService {
 
     public void saveTrace() {
         GeometryFactory gf = new GeometryFactory();
-        Double lat = 44.4268;
-        Double lon = 26.1025;
+        Double lat = 44.4268123456789;
+        Double lon = 26.1025432123456;
         Point point = gf.createPoint(new Coordinate(lat, lon));
         point.setSRID(4326);
 
@@ -29,6 +29,7 @@ public class TraceService {
                 .location(point)
                 .deviceId("deviceid")
                 .updatedAt(Instant.now())
-                .companyAccessKey("sq").build());
+                .companyAccessKey("sq")
+                .build());
     }
 }
