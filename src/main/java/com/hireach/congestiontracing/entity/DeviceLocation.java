@@ -16,8 +16,8 @@ import java.time.Instant;
 @Builder
 public class DeviceLocation {
     @Id
-    @GeneratedValue(generator = "trace_gen_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "trace_gen_seq", sequenceName = "trace_seq", allocationSize = 1)
+    @GeneratedValue(generator = "device_location_gen_seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "device_location_gen_seq", sequenceName = "device_location_seq", allocationSize = 1)
     private Long id;
 
     private String companyAccessKey;
@@ -26,5 +26,5 @@ public class DeviceLocation {
 
     private Instant updatedAt;
 
-    private Point location;
+    private Point locationPoint;
 }

@@ -26,7 +26,7 @@ public class DeviceLocationService {
         point.setSRID(4326);
 
         deviceLocationRepository.save(DeviceLocation.builder()
-                .location(point)
+                .locationPoint(point)
                 .deviceId(deviceId)
                 .updatedAt(Instant.now())
                 .companyAccessKey(companyKey)
