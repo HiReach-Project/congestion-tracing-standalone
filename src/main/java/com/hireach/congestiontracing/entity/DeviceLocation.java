@@ -14,7 +14,7 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Location {
+public class DeviceLocation {
     @Id
     @GeneratedValue(generator = "trace_gen_seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "trace_gen_seq", sequenceName = "trace_seq", allocationSize = 1)

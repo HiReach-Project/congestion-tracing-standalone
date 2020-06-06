@@ -1,6 +1,6 @@
 package com.hireach.congestiontracing;
 
-import com.hireach.congestiontracing.service.LocationService;
+import com.hireach.congestiontracing.service.DeviceLocationService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,14 +12,14 @@ import java.time.Instant;
 class CongestionTracingApplicationTests {
 
     @Autowired
-    LocationService locationService;
+    DeviceLocationService deviceLocationService;
 
     @Test
     @Rollback(value = false)
     void contextLoads() {
         Instant instant = Instant.now();
         System.out.println(instant);
-//        traceService.saveTrace();
+        deviceLocationService.saveTrace(84.3333D, 172.2222D, "sx", "zz");
     }
 
 }

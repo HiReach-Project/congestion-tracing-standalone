@@ -1,6 +1,6 @@
 package com.hireach.congestiontracing.controller;
 
-import com.hireach.congestiontracing.service.LocationService;
+import com.hireach.congestiontracing.service.DeviceLocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -11,12 +11,12 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/api")
-public class LocationController {
+public class DeviceLocationController {
 
-    private final LocationService locationService;
+    private final DeviceLocationService deviceLocationService;
 
-    public LocationController(LocationService locationService) {
-        this.locationService = Objects.requireNonNull(locationService, "locationService should not be null");
+    public DeviceLocationController(DeviceLocationService deviceLocationService) {
+        this.deviceLocationService = Objects.requireNonNull(deviceLocationService, "locationService should not be null");
     }
 
     @PostMapping(value = "/location")
@@ -25,7 +25,7 @@ public class LocationController {
                           @RequestParam(value = "lon") double lon,
                           @RequestParam(value = "device_id") String deviceId,
                           @RequestParam(value = "company_key") String companyKey) {
-        locationService.saveTrace(lat, lon, deviceId, companyKey);
+        deviceLocationService.saveTrace(lat, lon, deviceId, companyKey);
     }
 
     @GetMapping(value = "/congestion")

@@ -1,7 +1,7 @@
 package com.hireach.congestiontracing.service;
 
-import com.hireach.congestiontracing.entity.Location;
-import com.hireach.congestiontracing.repository.LocationRepository;
+import com.hireach.congestiontracing.entity.DeviceLocation;
+import com.hireach.congestiontracing.repository.DeviceLocationRepository;
 import org.locationtech.jts.geom.Coordinate;
 import org.locationtech.jts.geom.GeometryFactory;
 import org.locationtech.jts.geom.Point;
@@ -11,21 +11,21 @@ import java.time.Instant;
 import java.util.Objects;
 
 @Service
-public class LocationService {
+public class DeviceLocationService {
 
-    LocationRepository locationRepository;
+    DeviceLocationRepository deviceLocationRepository;
 
-    public LocationService(LocationRepository locationRepository) {
-        this.locationRepository = Objects.requireNonNull(locationRepository, "locationRepository should not be null");
+    public DeviceLocationService(DeviceLocationRepository deviceLocationRepository) {
+        this.deviceLocationRepository = Objects.requireNonNull(deviceLocationRepository, "locationRepository should not be null");
     }
 
     public void saveTrace(double lat, double lon, String deviceId, String companyKey) {
         GeometryFactory gf = new GeometryFactory();
 
-        Point point = gf.createPoint(new Coordinate(lat, lon));
+        Point point = gf.createPoint(new Coordinate(lon, lat));
         point.setSRID(4326);
 
-        locationRepository.save(Location.builder()
+        deviceLocationRepository.save(DeviceLocation.builder()
                 .location(point)
                 .deviceId(deviceId)
                 .updatedAt(Instant.now())
