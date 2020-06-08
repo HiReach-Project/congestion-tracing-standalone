@@ -1,9 +1,11 @@
 package com.hireach.congestiontracing.controller;
 
+import com.hireach.congestiontracing.service.DeviceLocationHistoryService;
 import com.hireach.congestiontracing.service.DeviceLocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.Instant;
 import java.util.Objects;
 
 @RestController
@@ -12,8 +14,11 @@ public class DeviceLocationController {
 
     private final DeviceLocationService deviceLocationService;
 
-    public DeviceLocationController(DeviceLocationService deviceLocationService) {
-        this.deviceLocationService = Objects.requireNonNull(deviceLocationService, "locationService should not be null");
+    private final DeviceLocationHistoryService deviceLocationHistoryService;
+
+    public DeviceLocationController(DeviceLocationService deviceLocationService, DeviceLocationHistoryService deviceLocationHistoryService) {
+        this.deviceLocationService = Objects.requireNonNull(deviceLocationService, "deviceLocationService should not be null");
+        this.deviceLocationHistoryService = Objects.requireNonNull(deviceLocationHistoryService, "deviceLocationHistoryService should not be null");
     }
 
     @PostMapping(value = "/location")
@@ -22,7 +27,9 @@ public class DeviceLocationController {
                                    @RequestParam(value = "lon") double lon,
                                    @RequestParam(value = "device_id") String deviceId,
                                    @RequestParam(value = "company_key") String companyKey) {
-        deviceLocationService.saveDeviceLocation(lat, lon, deviceId, companyKey);
+        Instant instant = Instant.now();
+        deviceLocationService.saveOrUpdateDeviceLocation(lat, lon, deviceId, companyKey, instant);
+        deviceLocationHistoryService.saveDeviceLocationHistory(lat, lon, deviceId, companyKey, instant);
     }
 
     @GetMapping(value = "/congestion")

@@ -22,7 +22,7 @@ class CongestionTracingApplicationTests {
         // bucharest
         //deviceLocationService.saveTrace(44.426164962 , 26.102332924, "sx", "zz");
         // cluj
-        deviceLocationService.saveDeviceLocation(46.7666700, 23.6000000, "sx", "zz");
+        deviceLocationService.saveOrUpdateDeviceLocation(46.7666700, 23.6000000, "sx", "zz", Instant.now());
     }
 
 }
