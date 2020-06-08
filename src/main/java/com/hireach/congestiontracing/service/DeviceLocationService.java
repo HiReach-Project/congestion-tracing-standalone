@@ -19,7 +19,7 @@ public class DeviceLocationService {
         this.deviceLocationRepository = Objects.requireNonNull(deviceLocationRepository, "locationRepository should not be null");
     }
 
-    public void saveTrace(double lat, double lon, String deviceId, String companyKey) {
+    public void saveDeviceLocation(double lat, double lon, String deviceId, String companyKey) {
         GeometryFactory gf = new GeometryFactory();
 
         Point point = gf.createPoint(new Coordinate(lon, lat));
@@ -32,4 +32,15 @@ public class DeviceLocationService {
                 .companyAccessKey(companyKey)
                 .build());
     }
+
+    public int getCongestion(double lat, double lon, double radius) {
+        GeometryFactory gf = new GeometryFactory();
+
+        Point point = gf.createPoint(new Coordinate(lon, lat));
+        point.setSRID(4326);
+
+        return deviceLocationRepository.getCongestion(point, radius);
+    }
+
+
 }

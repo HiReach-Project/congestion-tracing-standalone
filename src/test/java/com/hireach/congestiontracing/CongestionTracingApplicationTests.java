@@ -19,7 +19,10 @@ class CongestionTracingApplicationTests {
     void contextLoads() {
         Instant instant = Instant.now();
         System.out.println(instant);
-        deviceLocationService.saveTrace(84.3333D, 172.2222D, "sx", "zz");
+        // bucharest
+        //deviceLocationService.saveTrace(44.426164962 , 26.102332924, "sx", "zz");
+        // cluj
+        deviceLocationService.saveDeviceLocation(46.7666700, 23.6000000, "sx", "zz");
     }
 
 }

@@ -5,11 +5,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
-import java.util.List;
 import java.util.Objects;
 
-@Controller
+@RestController
 @RequestMapping("/api")
 public class DeviceLocationController {
 
@@ -25,15 +23,15 @@ public class DeviceLocationController {
                           @RequestParam(value = "lon") double lon,
                           @RequestParam(value = "device_id") String deviceId,
                           @RequestParam(value = "company_key") String companyKey) {
-        deviceLocationService.saveTrace(lat, lon, deviceId, companyKey);
+        deviceLocationService.saveDeviceLocation(lat, lon, deviceId, companyKey);
     }
 
     @GetMapping(value = "/congestion")
     @ResponseStatus(HttpStatus.OK)
-    public List<String> getCongestion(@RequestParam("lat") double lat,
-                                      @RequestParam(value = "lon") double lon,
-                                      @RequestParam(value = "r") double radius) {
-        return Collections.emptyList();
+    public int getCongestion(@RequestParam("lat") double lat,
+                             @RequestParam(value = "lon") double lon,
+                             @RequestParam(value = "radius") double radius) {
+        return deviceLocationService.getCongestion(lat, lon, radius);
     }
 
 }
