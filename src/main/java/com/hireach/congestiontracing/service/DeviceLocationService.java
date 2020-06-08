@@ -20,10 +20,7 @@ public class DeviceLocationService {
     }
 
     public void saveDeviceLocation(double lat, double lon, String deviceId, String companyKey) {
-        GeometryFactory gf = new GeometryFactory();
-
-        Point point = gf.createPoint(new Coordinate(lon, lat));
-        point.setSRID(4326);
+        Point point = createPoint(lat, lon);
 
         deviceLocationRepository.save(DeviceLocation.builder()
                 .locationPoint(point)
@@ -33,14 +30,18 @@ public class DeviceLocationService {
                 .build());
     }
 
-    public int getCongestion(double lat, double lon, double radius) {
-        GeometryFactory gf = new GeometryFactory();
+    public int getCongestion(double lat, double lon, double radius, Integer secondsAgo) {
+        Point point = createPoint(lat, lon);
 
+        return deviceLocationRepository.getCongestion(point, radius, (secondsAgo == null ? 30 : secondsAgo));
+    }
+
+    private Point createPoint(double lat, double lon) {
+        GeometryFactory gf = new GeometryFactory();
         Point point = gf.createPoint(new Coordinate(lon, lat));
         point.setSRID(4326);
 
-        return deviceLocationRepository.getCongestion(point, radius);
+        return point;
     }
-
 
 }

@@ -6,7 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
 import java.time.Instant;
 
 @Entity
@@ -15,14 +16,11 @@ import java.time.Instant;
 @AllArgsConstructor
 @Builder
 public class DeviceLocation {
+
     @Id
-    @GeneratedValue(generator = "device_location_gen_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "device_location_gen_seq", sequenceName = "device_location_seq", allocationSize = 1)
-    private Long id;
+    private String deviceId;
 
     private String companyAccessKey;
-
-    private String deviceId;
 
     private Instant updatedAt;
 
