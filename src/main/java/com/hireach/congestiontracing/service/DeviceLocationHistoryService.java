@@ -29,4 +29,5 @@ public class DeviceLocationHistoryService {
                 .companyAccessKey(companyKey)
                 .build());
     }
+
 }

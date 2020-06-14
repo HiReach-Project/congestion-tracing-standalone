@@ -25,4 +25,5 @@ public class DeviceLocation {
     private Instant updatedAt;
 
     private Point locationPoint;
+
 }

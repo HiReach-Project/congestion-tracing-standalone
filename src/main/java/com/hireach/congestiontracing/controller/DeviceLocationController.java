@@ -26,7 +26,7 @@ public class DeviceLocationController {
     public void saveDeviceLocation(@RequestParam(value = "lat") double lat,
                                    @RequestParam(value = "lon") double lon,
                                    @RequestParam(value = "device_id") String deviceId,
-                                   @RequestParam(value = "company_key") String companyKey) {
+                                   @RequestParam(value = "key") String companyKey) {
         Instant instant = Instant.now();
         deviceLocationService.saveOrUpdateDeviceLocation(lat, lon, deviceId, companyKey, instant);
         deviceLocationHistoryService.saveDeviceLocationHistory(lat, lon, deviceId, companyKey, instant);
