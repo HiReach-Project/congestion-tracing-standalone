@@ -12,7 +12,6 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.crypto.bcrypt.BCrypt;
 
 import java.util.Objects;
 import java.util.Optional;
@@ -45,6 +44,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
                 throw new BadCredentialsException("The API key was not found or not the expected value.");
             }
             authentication.setAuthenticated(true);
+
             return authentication;
         });
 
@@ -60,6 +60,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
                 .addFilter(filter)
                 .addFilterAfter(context.getBean(ServletRequestFilter.class), APIKeyAuthFilter.class)
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
     }
 
 }
