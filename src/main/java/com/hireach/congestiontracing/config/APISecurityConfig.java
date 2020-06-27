@@ -1,6 +1,7 @@
 package com.hireach.congestiontracing.config;
 
 import com.giffing.bucket4j.spring.boot.starter.servlet.ServletRequestFilter;
+import com.hireach.congestiontracing.component.CompanyWrapper;
 import com.hireach.congestiontracing.entity.Company;
 import com.hireach.congestiontracing.filter.APIKeyAuthFilter;
 import com.hireach.congestiontracing.repository.CompanyRepository;
@@ -24,10 +25,12 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationContext context;
     private final CompanyRepository companyRepository;
+    private final CompanyWrapper companyWrapper;
 
-    public APISecurityConfig(ApplicationContext context, CompanyRepository companyRepository) {
+    public APISecurityConfig(ApplicationContext context, CompanyRepository companyRepository, CompanyWrapper companyWrapper) {
         this.context = Objects.requireNonNull(context, "applicationContext should not be null");
         this.companyRepository = Objects.requireNonNull(companyRepository, "companyRepository should not be null");
+        this.companyWrapper = Objects.requireNonNull(companyWrapper, "companyInfo should not be null");
     }
 
     @Override
@@ -43,6 +46,7 @@ public class APISecurityConfig extends WebSecurityConfigurerAdapter {
             if (company.isEmpty()) {
                 throw new BadCredentialsException("The API key was not found or not the expected value.");
             }
+            companyWrapper.setCompany(company.get());
             authentication.setAuthenticated(true);
 
             return authentication;

@@ -1,5 +1,6 @@
 package com.hireach.congestiontracing.service;
 
+import com.hireach.congestiontracing.entity.Company;
 import com.hireach.congestiontracing.entity.DeviceLocation;
 import com.hireach.congestiontracing.repository.DeviceLocationHistoryRepository;
 import com.hireach.congestiontracing.repository.DeviceLocationRepository;
@@ -20,14 +21,14 @@ public class DeviceLocationService {
         this.deviceLocationRepository = Objects.requireNonNull(deviceLocationRepository, "deviceLocationRepository should not be null");
     }
 
-    public void saveOrUpdateDeviceLocation(double lat, double lon, String deviceId, String companyKey, Instant instant) {
+    public void saveOrUpdateDeviceLocation(double lat, double lon, String deviceId, Company company, Instant instant) {
         Point point = createPoint(lat, lon);
 
         deviceLocationRepository.save(DeviceLocation.builder()
                 .locationPoint(point)
                 .deviceId(deviceId)
                 .updatedAt(instant)
-                .companyAccessKey(companyKey)
+                .company(company)
                 .build());
     }
 

@@ -1,5 +1,6 @@
 package com.hireach.congestiontracing.controller;
 
+import com.hireach.congestiontracing.component.CompanyWrapper;
 import com.hireach.congestiontracing.service.DeviceLocationHistoryService;
 import com.hireach.congestiontracing.service.DeviceLocationService;
 import org.springframework.http.HttpStatus;
@@ -13,23 +14,25 @@ import java.util.Objects;
 public class DeviceLocationController {
 
     private final DeviceLocationService deviceLocationService;
-
     private final DeviceLocationHistoryService deviceLocationHistoryService;
+    private final CompanyWrapper companyWrapper;
 
-    public DeviceLocationController(DeviceLocationService deviceLocationService, DeviceLocationHistoryService deviceLocationHistoryService) {
+    public DeviceLocationController(DeviceLocationService deviceLocationService,
+                                    DeviceLocationHistoryService deviceLocationHistoryService,
+                                    CompanyWrapper companyWrapper) {
         this.deviceLocationService = Objects.requireNonNull(deviceLocationService, "deviceLocationService should not be null");
         this.deviceLocationHistoryService = Objects.requireNonNull(deviceLocationHistoryService, "deviceLocationHistoryService should not be null");
+        this.companyWrapper = Objects.requireNonNull(companyWrapper, "companyInfo should not be null");
     }
 
     @PostMapping(value = "/location")
     @ResponseStatus(HttpStatus.OK)
     public void saveDeviceLocation(@RequestParam(value = "lat") double lat,
                                    @RequestParam(value = "lon") double lon,
-                                   @RequestParam(value = "device_id") String deviceId,
-                                   @RequestParam(value = "key") String companyKey) {
+                                   @RequestParam(value = "device_id") String deviceId) {
         Instant instant = Instant.now();
-        deviceLocationService.saveOrUpdateDeviceLocation(lat, lon, deviceId, companyKey, instant);
-        deviceLocationHistoryService.saveDeviceLocationHistory(lat, lon, deviceId, companyKey, instant);
+        deviceLocationService.saveOrUpdateDeviceLocation(lat, lon, deviceId, companyWrapper.getCompany(), instant);
+        deviceLocationHistoryService.saveDeviceLocationHistory(lat, lon, deviceId, companyWrapper.getCompany(), instant);
     }
 
     @GetMapping(value = "/congestion")

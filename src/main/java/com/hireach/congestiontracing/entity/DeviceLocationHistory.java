@@ -21,9 +21,11 @@ public class DeviceLocationHistory {
     @SequenceGenerator(name = "device_location_history_gen_seq", sequenceName = "device_location_history_seq", allocationSize = 1)
     private Long id;
 
-    private String deviceId;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
-    private String companyAccessKey;
+    private String deviceId;
 
     private Instant updatedAt;
 

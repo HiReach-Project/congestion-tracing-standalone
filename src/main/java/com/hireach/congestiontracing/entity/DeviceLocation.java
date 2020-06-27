@@ -8,6 +8,8 @@ import org.locationtech.jts.geom.Point;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.Instant;
 
 @Entity
@@ -20,7 +22,9 @@ public class DeviceLocation {
     @Id
     private String deviceId;
 
-    private String companyAccessKey;
+    @ManyToOne
+    @JoinColumn(name = "company_id")
+    private Company company;
 
     private Instant updatedAt;
 

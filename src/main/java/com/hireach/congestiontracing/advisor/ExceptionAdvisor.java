@@ -17,7 +17,6 @@ import javax.servlet.http.HttpServletRequest;
 @RestControllerAdvice
 public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
 
-
     @Override
     protected ResponseEntity<Object> handleTypeMismatch(final TypeMismatchException ex,
                                                         final HttpHeaders headers,
