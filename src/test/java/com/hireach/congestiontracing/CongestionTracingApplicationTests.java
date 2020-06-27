@@ -11,7 +11,7 @@ import java.time.Instant;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
-@SpringBootTest
+//@SpringBootTest
 class CongestionTracingApplicationTests {
 
     @Autowired
