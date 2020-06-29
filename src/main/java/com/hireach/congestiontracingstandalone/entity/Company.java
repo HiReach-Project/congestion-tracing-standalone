@@ -1,4 +1,4 @@
-package com.hireach.congestiontracing.entity;
+package com.hireach.congestiontracingstandalone.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

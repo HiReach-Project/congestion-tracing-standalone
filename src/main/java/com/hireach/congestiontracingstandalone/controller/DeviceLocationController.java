@@ -1,8 +1,8 @@
-package com.hireach.congestiontracing.controller;
+package com.hireach.congestiontracingstandalone.controller;
 
-import com.hireach.congestiontracing.component.CompanyWrapper;
-import com.hireach.congestiontracing.service.DeviceLocationHistoryService;
-import com.hireach.congestiontracing.service.DeviceLocationService;
+import com.hireach.congestiontracingstandalone.component.CompanyWrapper;
+import com.hireach.congestiontracingstandalone.service.DeviceLocationHistoryService;
+import com.hireach.congestiontracingstandalone.service.DeviceLocationService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 

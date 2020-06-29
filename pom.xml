@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.hireach</groupId>
-	<artifactId>congestion-tracing</artifactId>
+	<artifactId>congestion-tracing-standalone</artifactId>
 	<version>1.0</version>
-	<name>congestion-tracing</name>
+	<name>congestion-tracing-standalone</name>
 
 	<properties>
 		<java.version>11</java.version>

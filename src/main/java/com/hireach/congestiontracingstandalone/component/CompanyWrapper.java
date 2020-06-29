@@ -1,6 +1,6 @@
-package com.hireach.congestiontracing.component;
+package com.hireach.congestiontracingstandalone.component;
 
-import com.hireach.congestiontracing.entity.Company;
+import com.hireach.congestiontracingstandalone.entity.Company;
 import lombok.Data;
 import org.springframework.context.annotation.Scope;
 import org.springframework.context.annotation.ScopedProxyMode;

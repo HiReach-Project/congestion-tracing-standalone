@@ -1,6 +1,6 @@
-package com.hireach.congestiontracing.repository;
+package com.hireach.congestiontracingstandalone.repository;
 
-import com.hireach.congestiontracing.entity.DeviceLocation;
+import com.hireach.congestiontracingstandalone.entity.DeviceLocation;
 import org.locationtech.jts.geom.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;

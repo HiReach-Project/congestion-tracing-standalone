@@ -1,10 +1,10 @@
-package com.hireach.congestiontracing.config;
+package com.hireach.congestiontracingstandalone.config;
 
 import com.giffing.bucket4j.spring.boot.starter.servlet.ServletRequestFilter;
-import com.hireach.congestiontracing.component.CompanyWrapper;
-import com.hireach.congestiontracing.entity.Company;
-import com.hireach.congestiontracing.filter.APIKeyAuthFilter;
-import com.hireach.congestiontracing.repository.CompanyRepository;
+import com.hireach.congestiontracingstandalone.component.CompanyWrapper;
+import com.hireach.congestiontracingstandalone.entity.Company;
+import com.hireach.congestiontracingstandalone.filter.APIKeyAuthFilter;
+import com.hireach.congestiontracingstandalone.repository.CompanyRepository;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;

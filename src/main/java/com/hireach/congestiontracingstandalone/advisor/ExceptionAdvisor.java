@@ -1,6 +1,6 @@
-package com.hireach.congestiontracing.advisor;
+package com.hireach.congestiontracingstandalone.advisor;
 
-import com.hireach.congestiontracing.model.ApiError;
+import com.hireach.congestiontracingstandalone.model.ApiError;
 import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -33,7 +33,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex) {
         logger.info(ex.getClass().getName());
-        //
+
         final String error = "Parameter " + "'" + ex.getName() + "'" + " should be of type " + ex.getRequiredType().getName();
 
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), error);
@@ -43,8 +43,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({AccessDeniedException.class})
     public ResponseEntity<Object> handle(final AccessDeniedException ex, HttpServletRequest request) {
         logger.info(ex.getClass().getName());
-        System.out.println("ceva");
-        //
+
         final String error = "Access denied!!!";
 
         final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), error);

@@ -1,15 +1,15 @@
-package com.hireach.congestiontracing.service;
+package com.hireach.congestiontracingstandalone.service;
 
-import com.hireach.congestiontracing.entity.Company;
-import com.hireach.congestiontracing.entity.DeviceLocationHistory;
-import com.hireach.congestiontracing.repository.DeviceLocationHistoryRepository;
+import com.hireach.congestiontracingstandalone.entity.Company;
+import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
+import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
 import java.util.Objects;
 
-import static com.hireach.congestiontracing.util.Util.createPoint;
+import static com.hireach.congestiontracingstandalone.util.Util.createPoint;
 
 @Service
 public class DeviceLocationHistoryService {

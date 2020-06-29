@@ -1,13 +1,10 @@
-package com.hireach.congestiontracing;
+package com.hireach.congestiontracingstandalone;
 
-import com.hireach.congestiontracing.service.DeviceLocationService;
+import com.hireach.congestiontracingstandalone.service.DeviceLocationService;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.annotation.Rollback;
-
-import java.time.Instant;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 

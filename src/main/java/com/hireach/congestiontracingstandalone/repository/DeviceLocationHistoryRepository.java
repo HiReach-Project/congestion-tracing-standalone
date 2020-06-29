@@ -1,6 +1,6 @@
-package com.hireach.congestiontracing.repository;
+package com.hireach.congestiontracingstandalone.repository;
 
-import com.hireach.congestiontracing.entity.DeviceLocationHistory;
+import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

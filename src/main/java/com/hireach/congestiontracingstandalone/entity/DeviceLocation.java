@@ -1,4 +1,4 @@
-package com.hireach.congestiontracing.entity;
+package com.hireach.congestiontracingstandalone.entity;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -6,7 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.locationtech.jts.geom.Point;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.time.Instant;
 
 @Entity
@@ -14,18 +17,14 @@ import java.time.Instant;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class DeviceLocationHistory {
+public class DeviceLocation {
 
     @Id
-    @GeneratedValue(generator = "device_location_history_gen_seq", strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "device_location_history_gen_seq", sequenceName = "device_location_history_seq", allocationSize = 1)
-    private Long id;
+    private String deviceId;
 
     @ManyToOne
     @JoinColumn(name = "company_id")
     private Company company;
-
-    private String deviceId;
 
     private Instant updatedAt;
 
