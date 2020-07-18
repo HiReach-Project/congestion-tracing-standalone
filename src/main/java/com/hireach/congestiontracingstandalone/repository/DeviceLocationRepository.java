@@ -11,7 +11,7 @@ public interface DeviceLocationRepository extends JpaRepository<DeviceLocation, 
 
     @Query(value = "SELECT count(*)\n" +
             "FROM device_location\n" +
-            "WHERE updated_at > current_timestamp - ?3 * interval '1 seconds'\n" +
+            "WHERE updated_at > current_timestamp at time zone 'utc' - ?3 * interval '1 seconds'\n" +
             "  AND ST_DistanceSpheroid(geometry(location_point), ?1,\n" +
             "                          'SPHEROID[\"WGS 84\",6378137,298.257223563]') < ?2", nativeQuery = true)
     int getCongestion(Point point, Double radius, Integer secondsAgo);

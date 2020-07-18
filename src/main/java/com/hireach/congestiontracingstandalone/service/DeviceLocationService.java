@@ -34,7 +34,6 @@ public class DeviceLocationService {
 
     public int getCongestion(double lat, double lon, double radius, Integer secondsAgo) {
         Point point = createPoint(lat, lon);
-
         return deviceLocationRepository.getCongestion(point, radius, (secondsAgo == null ? 30 : secondsAgo));
     }
 
