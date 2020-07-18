@@ -5,6 +5,7 @@ import com.hireach.congestiontracingstandalone.component.CompanyWrapper;
 import com.hireach.congestiontracingstandalone.entity.Company;
 import com.hireach.congestiontracingstandalone.filter.APIKeyAuthFilter;
 import com.hireach.congestiontracingstandalone.repository.CompanyRepository;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Configuration;
@@ -14,24 +15,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 
-import java.util.Objects;
 import java.util.Optional;
 
 import static org.apache.commons.codec.digest.MessageDigestAlgorithms.SHA3_256;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class APISecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final ApplicationContext context;
     private final CompanyRepository companyRepository;
     private final CompanyWrapper companyWrapper;
-
-    public APISecurityConfig(ApplicationContext context, CompanyRepository companyRepository, CompanyWrapper companyWrapper) {
-        this.context = Objects.requireNonNull(context, "applicationContext should not be null");
-        this.companyRepository = Objects.requireNonNull(companyRepository, "companyRepository should not be null");
-        this.companyWrapper = Objects.requireNonNull(companyWrapper, "companyInfo should not be null");
-    }
 
     @Override
     protected void configure(HttpSecurity httpSecurity) throws Exception {

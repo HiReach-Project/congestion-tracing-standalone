@@ -3,6 +3,7 @@ package com.hireach.congestiontracingstandalone.controller;
 import com.hireach.congestiontracingstandalone.component.CompanyWrapper;
 import com.hireach.congestiontracingstandalone.service.DeviceLocationHistoryService;
 import com.hireach.congestiontracingstandalone.service.DeviceLocationService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -11,19 +12,12 @@ import java.util.Objects;
 
 @RestController
 @RequestMapping("/api")
+@RequiredArgsConstructor
 public class DeviceLocationController {
 
     private final DeviceLocationService deviceLocationService;
     private final DeviceLocationHistoryService deviceLocationHistoryService;
     private final CompanyWrapper companyWrapper;
-
-    public DeviceLocationController(DeviceLocationService deviceLocationService,
-                                    DeviceLocationHistoryService deviceLocationHistoryService,
-                                    CompanyWrapper companyWrapper) {
-        this.deviceLocationService = Objects.requireNonNull(deviceLocationService, "deviceLocationService should not be null");
-        this.deviceLocationHistoryService = Objects.requireNonNull(deviceLocationHistoryService, "deviceLocationHistoryService should not be null");
-        this.companyWrapper = Objects.requireNonNull(companyWrapper, "companyInfo should not be null");
-    }
 
     @PostMapping(value = "/location")
     @ResponseStatus(HttpStatus.OK)

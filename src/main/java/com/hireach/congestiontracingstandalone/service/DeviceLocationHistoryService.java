@@ -3,6 +3,7 @@ package com.hireach.congestiontracingstandalone.service;
 import com.hireach.congestiontracingstandalone.entity.Company;
 import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
 import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
+import lombok.RequiredArgsConstructor;
 import org.locationtech.jts.geom.Point;
 import org.springframework.stereotype.Service;
 
@@ -12,13 +13,10 @@ import java.util.Objects;
 import static com.hireach.congestiontracingstandalone.util.Util.createPoint;
 
 @Service
+@RequiredArgsConstructor
 public class DeviceLocationHistoryService {
 
     private final DeviceLocationHistoryRepository deviceLocationHistoryRepository;
-
-    public DeviceLocationHistoryService(DeviceLocationHistoryRepository deviceLocationHistoryRepository) {
-        this.deviceLocationHistoryRepository = Objects.requireNonNull(deviceLocationHistoryRepository, "deviceLocationHistoryRepository should not be null");
-    }
 
     public void saveDeviceLocationHistory(double lat, double lon, String deviceId, Company company, Instant instant) {
         Point point = createPoint(lat, lon);
