@@ -1,62 +1,75 @@
 package com.hireach.congestiontracingstandalone.advisor;
 
-import com.hireach.congestiontracingstandalone.model.ApiError;
-import org.springframework.beans.TypeMismatchException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.context.request.ServletWebRequest;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
+import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.Instant;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 @RestControllerAdvice
 public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
 
     @Override
-    protected ResponseEntity<Object> handleTypeMismatch(final TypeMismatchException ex,
-                                                        final HttpHeaders headers,
-                                                        final HttpStatus status,
-                                                        final WebRequest request) {
-        logger.info(ex.toString());
+    protected ResponseEntity<Object> handleNoHandlerFoundException(NoHandlerFoundException ex,
+                                                                   HttpHeaders headers,
+                                                                   HttpStatus status,
+                                                                   WebRequest request) {
+        Map<String, Object> errorInfo = new LinkedHashMap<>();
+        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("status", HttpStatus.NOT_FOUND.value());
+        errorInfo.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
+        errorInfo.put("message", "Path not found");
+        errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(errorInfo, HttpStatus.NOT_FOUND);
+    }
 
-        final String error = ex.getValue() + " value for " + ex.getPropertyName() + " should be of type " + ex.getRequiredType();
+    @Override
+    protected ResponseEntity<Object> handleMissingServletRequestParameter(MissingServletRequestParameterException ex,
+                                                                          HttpHeaders headers,
+                                                                          HttpStatus status,
+                                                                          WebRequest request) {
+        Map<String, Object> errorInfo = new LinkedHashMap<>();
+        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
+        errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorInfo.put("message", "Missing parameter " + ex.getParameterName());
+        errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
 
-        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
     }
 
     @ExceptionHandler({MethodArgumentTypeMismatchException.class})
-    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(final MethodArgumentTypeMismatchException ex) {
-        logger.info(ex.getClass().getName());
-
-        final String error = "Parameter " + "'" + ex.getName() + "'" + " should be of type " + ex.getRequiredType().getName();
-
-        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
-    }
-
-    @ExceptionHandler({AccessDeniedException.class})
-    public ResponseEntity<Object> handle(final AccessDeniedException ex, HttpServletRequest request) {
-        logger.info(ex.getClass().getName());
-
-        final String error = "Access denied!!!";
-
-        final ApiError apiError = new ApiError(HttpStatus.BAD_REQUEST, HttpStatus.BAD_REQUEST.value(), error);
-        return new ResponseEntity<>(apiError, new HttpHeaders(), apiError.getStatus());
+    public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
+                                                                   HttpServletRequest request) {
+        Map<String, Object> errorInfo = new LinkedHashMap<>();
+        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
+        errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorInfo.put("message", ex.getValue() + " should be of type " + ex.getRequiredType());
+        errorInfo.put("path", request.getRequestURI());
+        return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
-        logger.info(ex.getClass().getName());
-        logger.error("error", ex);
-        //
-        final ApiError apiError = new ApiError(HttpStatus.INTERNAL_SERVER_ERROR, HttpStatus.BAD_REQUEST.value(), "error occurred");
-        return new ResponseEntity<Object>(apiError, new HttpHeaders(), apiError.getStatus());
+        Map<String, Object> errorInfo = new LinkedHashMap<>();
+        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+        errorInfo.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
+        errorInfo.put("message", "Internal server error!");
+        errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 }
