@@ -1,5 +1,6 @@
 package com.hireach.congestiontracingstandalone.advisor;
 
+import org.hibernate.validator.internal.engine.path.PathImpl;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,9 +14,11 @@ import org.springframework.web.servlet.NoHandlerFoundException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.validation.ConstraintViolationException;
 import java.time.Instant;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestControllerAdvice
 public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
@@ -61,13 +64,34 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler({ConstraintViolationException.class})
+    public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
+        Map<String, Object> errorInfo = new LinkedHashMap<>();
+        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
+        errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
+        errorInfo.put("message", buildConstraintViolationErrorMessage(ex));
+        errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
+        return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
+    }
+
+    private String buildConstraintViolationErrorMessage(ConstraintViolationException ex) {
+        return ex.getConstraintViolations()
+                .stream()
+                .map(violation -> {
+                    String parameterName = ((PathImpl) violation.getPropertyPath()).getLeafNode().getName();
+                    return parameterName + " " + violation.getMessage();
+                })
+                .collect(Collectors.joining(", "));
+    }
+
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
         Map<String, Object> errorInfo = new LinkedHashMap<>();
         errorInfo.put("timestamp", Instant.now().toEpochMilli());
         errorInfo.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorInfo.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        errorInfo.put("message", "Internal server error!");
+        errorInfo.put("message", "Something went wrong");
         errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
         return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
     }
