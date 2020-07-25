@@ -59,7 +59,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
         errorInfo.put("timestamp", Instant.now().toEpochMilli());
         errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
         errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
-        errorInfo.put("message", ex.getValue() + " should be of type " + ex.getRequiredType());
+        errorInfo.put("message", ex.getName() + " (" + ex.getValue() + ") should be of type " + ex.getRequiredType());
         errorInfo.put("path", request.getRequestURI());
         return new ResponseEntity<>(errorInfo, HttpStatus.BAD_REQUEST);
     }
@@ -91,7 +91,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
         errorInfo.put("timestamp", Instant.now().toEpochMilli());
         errorInfo.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorInfo.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
-        errorInfo.put("message", "Something went wrong");
+        errorInfo.put("message", "Oops! Something went wrong on our side.");
         errorInfo.put("path", ((ServletWebRequest) request).getRequest().getRequestURI());
         return new ResponseEntity<>(errorInfo, HttpStatus.INTERNAL_SERVER_ERROR);
     }
