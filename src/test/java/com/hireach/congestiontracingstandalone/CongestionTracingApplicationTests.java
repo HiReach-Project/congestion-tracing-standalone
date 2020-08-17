@@ -51,6 +51,16 @@ class CongestionTracingApplicationTests {
     }
 
     @Test
+    public void getPrediction() {
+        Instant start = Instant.now();
+
+        var v = deviceLocationHistoryService.getPrediction(44.4133671, 26.1630280, 10D, Instant.now());
+        System.out.println(v);
+        System.out.println(Duration.between(start, Instant.now()));
+
+    }
+
+    @Test
     @Rollback(value = false)
     void simulateDeviceLocations() {
         Company testCompany = companyRepository.findAll().get(0);

@@ -4,6 +4,8 @@ import com.hireach.congestiontracingstandalone.entity.Company;
 import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
 import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
 import org.locationtech.jts.geom.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -17,6 +19,8 @@ import static com.hireach.congestiontracingstandalone.util.Util.createPoint;
 
 @Service
 public class DeviceLocationHistoryService {
+
+    private static final Logger LOG = LoggerFactory.getLogger(DeviceLocationHistoryService.class);
 
     @Value("${mlservice.url}")
     private String ML_SERVICE_URL;
@@ -47,17 +51,19 @@ public class DeviceLocationHistoryService {
         return deviceLocationHistoryRepository.getHistory(point, radius);
     }
 
-    public int getPrediction(double lat, double lon, double radius) {
+    public String getPrediction(double lat, double lon, double radius, Instant predictionDate) {
         Point point = createPoint(lat, lon);
+        LOG.info("Getting history for point lon " + lon + ", lat " + lat);
         List<DeviceLocationHistoryRepository.MLDataModel> deviceLocationHistory = deviceLocationHistoryRepository.getHistory(point, 10D);
+        LOG.info("Sending predict request to the prediction service...");
 
         return webClient
                 .post()
-                .uri(ML_SERVICE_URL + "/predict")
+                .uri(ML_SERVICE_URL + "/predict?prediction_date=" + predictionDate)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(BodyInserters.fromValue(deviceLocationHistory))
                 .retrieve()
-                .bodyToMono(Integer.class)
+                .bodyToMono(String.class)
                 .block();
     }
 
