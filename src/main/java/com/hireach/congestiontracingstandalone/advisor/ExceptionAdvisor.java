@@ -87,6 +87,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
+        ex.printStackTrace();
         Map<String, Object> errorInfo = new LinkedHashMap<>();
         errorInfo.put("timestamp", Instant.now().toEpochMilli());
         errorInfo.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());

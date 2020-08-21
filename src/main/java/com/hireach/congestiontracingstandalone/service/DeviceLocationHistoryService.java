@@ -1,7 +1,9 @@
 package com.hireach.congestiontracingstandalone.service;
 
+import com.hireach.congestiontracingstandalone.dao.DeviceLocationHistoryDao;
 import com.hireach.congestiontracingstandalone.entity.Company;
 import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
+import com.hireach.congestiontracingstandalone.model.MLDataModel;
 import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
@@ -27,11 +29,14 @@ public class DeviceLocationHistoryService {
 
     private final WebClient webClient;
     private final DeviceLocationHistoryRepository deviceLocationHistoryRepository;
+    private final DeviceLocationHistoryDao deviceLocationHistoryDao;
 
     public DeviceLocationHistoryService(final WebClient.Builder webClient,
-                                        final DeviceLocationHistoryRepository deviceLocationHistoryRepository) {
+                                        final DeviceLocationHistoryRepository deviceLocationHistoryRepository,
+                                        final DeviceLocationHistoryDao deviceLocationHistoryDao) {
         this.webClient = webClient.build();
         this.deviceLocationHistoryRepository = deviceLocationHistoryRepository;
+        this.deviceLocationHistoryDao = deviceLocationHistoryDao;
     }
 
     public void saveDeviceLocationHistory(double lat, double lon, String deviceId, Company company, Instant instant) {
@@ -45,17 +50,17 @@ public class DeviceLocationHistoryService {
                 .build());
     }
 
-    public List<DeviceLocationHistoryRepository.MLDataModel> getHistory(double lat, double lon, double radius) {
+    public List<MLDataModel> getHistory(double lat, double lon, double radius) {
         Point point = createPoint(lat, lon);
 
-        return deviceLocationHistoryRepository.getHistory(point, radius);
+        return deviceLocationHistoryDao.getHistory(point, radius);
     }
 
     public String getPrediction(double lat, double lon, double radius, Instant predictionDate) {
         Point point = createPoint(lat, lon);
         LOG.info("Getting history for point lon " + lon + ", lat " + lat);
-        List<DeviceLocationHistoryRepository.MLDataModel> deviceLocationHistory = deviceLocationHistoryRepository.getHistory(point, 10D);
-        LOG.info("Sending predict request to the prediction service...");
+        List<MLDataModel> deviceLocationHistory = deviceLocationHistoryDao.getHistory(point, 10D);
+        LOG.info("Sending request to the prediction service...");
 
         return webClient
                 .post()

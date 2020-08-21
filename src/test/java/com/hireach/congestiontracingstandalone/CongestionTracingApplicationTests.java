@@ -1,6 +1,8 @@
 package com.hireach.congestiontracingstandalone;
 
+import com.hireach.congestiontracingstandalone.dao.DeviceLocationHistoryDao;
 import com.hireach.congestiontracingstandalone.entity.Company;
+import com.hireach.congestiontracingstandalone.model.MLDataModel;
 import com.hireach.congestiontracingstandalone.repository.CompanyRepository;
 import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
 import com.hireach.congestiontracingstandalone.service.DeviceLocationHistoryService;
@@ -37,15 +39,18 @@ class CongestionTracingApplicationTests {
     @Autowired
     DeviceLocationHistoryRepository deviceLocationHistoryRepository;
 
+    @Autowired
+    DeviceLocationHistoryDao deviceLocationHistoryDao;
+
     @Test
-    public void getHistory() {
+    public void getJDBCHistory() {
         Instant start = Instant.now();
 
         Point point = createPoint(44.4133671, 26.1630280);
-        List<DeviceLocationHistoryRepository.MLDataModel> total = deviceLocationHistoryRepository.getHistory(point, 10D);
+        List<MLDataModel> total = deviceLocationHistoryDao.getHistory(point, 10D);
 
         System.out.println(Duration.between(start, Instant.now()));
-
+        System.out.println(total.get(0));
         System.out.println(total.size());
 
     }
@@ -106,7 +111,7 @@ class CongestionTracingApplicationTests {
 
             LocalTime localTime = LocalTime.from(tempTime.atZone(ZoneId.of("UTC")));
 
-            // if time is between 7-9 or 16-20 atunci 10-15 oameni
+            // if time between 7-9 or 16-20 atunci 16-20 people
             if (localTime.isAfter(LocalTime.of(7, 0)) && localTime.isBefore(LocalTime.of(9, 0))
                     || localTime.isAfter(LocalTime.of(16, 0)) && localTime.isBefore(LocalTime.of(20, 0))) {
                 createPoints(testCompany, tempTime, 16, 20);
@@ -119,7 +124,7 @@ class CongestionTracingApplicationTests {
             else if (localTime.isAfter(LocalTime.of(20, 0)) && localTime.isBefore(LocalTime.of(23, 0))) {
                 createPoints(testCompany, tempTime, 0, 4);
             }
-            // else random 0-1
+            // else random 0-2
             else {
                 createPoints(testCompany, tempTime, 0, 2);
             }
