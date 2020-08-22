@@ -29,7 +29,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
                                                                    HttpStatus status,
                                                                    WebRequest request) {
         Map<String, Object> errorInfo = new LinkedHashMap<>();
-        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("timestamp", Instant.now());
         errorInfo.put("status", HttpStatus.NOT_FOUND.value());
         errorInfo.put("error", HttpStatus.NOT_FOUND.getReasonPhrase());
         errorInfo.put("message", "Path not found");
@@ -43,7 +43,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
                                                                           HttpStatus status,
                                                                           WebRequest request) {
         Map<String, Object> errorInfo = new LinkedHashMap<>();
-        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("timestamp", Instant.now());
         errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
         errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
         errorInfo.put("message", "Missing parameter " + ex.getParameterName());
@@ -56,7 +56,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleMethodArgumentTypeMismatch(MethodArgumentTypeMismatchException ex,
                                                                    HttpServletRequest request) {
         Map<String, Object> errorInfo = new LinkedHashMap<>();
-        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("timestamp", Instant.now());
         errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
         errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
         errorInfo.put("message", ex.getName() + " (" + ex.getValue() + ") should be of type " + ex.getRequiredType());
@@ -67,7 +67,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     @ExceptionHandler({ConstraintViolationException.class})
     public ResponseEntity<Object> handleConstraintViolation(ConstraintViolationException ex, WebRequest request) {
         Map<String, Object> errorInfo = new LinkedHashMap<>();
-        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("timestamp", Instant.now());
         errorInfo.put("status", HttpStatus.BAD_REQUEST.value());
         errorInfo.put("error", HttpStatus.BAD_REQUEST.getReasonPhrase());
         errorInfo.put("message", buildConstraintViolationErrorMessage(ex));
@@ -89,7 +89,7 @@ public class ExceptionAdvisor extends ResponseEntityExceptionHandler {
     public ResponseEntity<Object> handleAll(final Exception ex, final WebRequest request) {
         ex.printStackTrace();
         Map<String, Object> errorInfo = new LinkedHashMap<>();
-        errorInfo.put("timestamp", Instant.now().toEpochMilli());
+        errorInfo.put("timestamp", Instant.now());
         errorInfo.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
         errorInfo.put("error", HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase());
         errorInfo.put("message", "Oops! Something went wrong on our side.");

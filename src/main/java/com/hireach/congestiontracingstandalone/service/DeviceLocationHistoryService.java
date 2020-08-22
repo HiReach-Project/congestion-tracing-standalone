@@ -5,14 +5,21 @@ import com.hireach.congestiontracingstandalone.entity.Company;
 import com.hireach.congestiontracingstandalone.entity.DeviceLocationHistory;
 import com.hireach.congestiontracingstandalone.model.MLDataModel;
 import com.hireach.congestiontracingstandalone.repository.DeviceLocationHistoryRepository;
+import io.netty.channel.ChannelOption;
+import io.netty.handler.timeout.ReadTimeoutHandler;
+import io.netty.handler.timeout.WriteTimeoutHandler;
 import org.locationtech.jts.geom.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.MediaType;
+import org.springframework.http.client.reactive.ReactorClientHttpConnector;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
+import reactor.netty.http.client.HttpClient;
+import reactor.netty.tcp.TcpClient;
 
 import java.time.Instant;
 import java.util.List;
@@ -34,7 +41,13 @@ public class DeviceLocationHistoryService {
     public DeviceLocationHistoryService(final WebClient.Builder webClient,
                                         final DeviceLocationHistoryRepository deviceLocationHistoryRepository,
                                         final DeviceLocationHistoryDao deviceLocationHistoryDao) {
-        this.webClient = webClient.build();
+        this.webClient = webClient.clientConnector(new ReactorClientHttpConnector(HttpClient.from(
+                TcpClient.create()
+                        .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 1000)
+                        .doOnConnected(connection ->
+                                connection.addHandlerLast(new ReadTimeoutHandler(10))
+                                        .addHandlerLast(new WriteTimeoutHandler(10))))
+        )).build();
         this.deviceLocationHistoryRepository = deviceLocationHistoryRepository;
         this.deviceLocationHistoryDao = deviceLocationHistoryDao;
     }
@@ -58,18 +71,27 @@ public class DeviceLocationHistoryService {
 
     public String getPrediction(double lat, double lon, double radius, Instant predictionDate) {
         Point point = createPoint(lat, lon);
-        LOG.info("Getting history for point lon " + lon + ", lat " + lat);
-        List<MLDataModel> deviceLocationHistory = deviceLocationHistoryDao.getHistory(point, 10D);
-        LOG.info("Sending request to the prediction service...");
 
-        return webClient
-                .post()
-                .uri(ML_SERVICE_URL + "/predict?prediction_date=" + predictionDate)
-                .contentType(MediaType.APPLICATION_JSON)
-                .body(BodyInserters.fromValue(deviceLocationHistory))
-                .retrieve()
-                .bodyToMono(String.class)
-                .block();
+        LOG.debug("Getting history for point lon " + lon + ", lat " + lat);
+        List<MLDataModel> deviceLocationHistory = deviceLocationHistoryDao.getHistory(point, radius);
+
+        LOG.debug("Sending request to the prediction service...");
+        try {
+            return webClient
+                    .post()
+                    .uri(ML_SERVICE_URL + "/predict?prediction_date=" + predictionDate)
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .body(BodyInserters.fromValue(deviceLocationHistory))
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            LOG.error("Something went wrong on the prediction service!");
+            throw e;
+        } catch (Exception e) {
+            LOG.error("Failed to connect to the prediction service! Make sure the ML service is running and can be accessed via network calls.");
+            throw e;
+        }
     }
 
 }
