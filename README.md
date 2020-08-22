@@ -78,7 +78,7 @@ GET /api/congestion/?key=1234567890&lat=44.348732&lon=26.104334&radius=10
         
     **Code:** 200 OK  
     **Content:** `3`  
-    The response is an integer representing the total number of devices being inside the perimeter of a circle
+    The response is an integer representing the total number of devices (users) being inside the perimeter of a circle
     of radius `12.5` meters and the center at `44.348732, 26.104334` which posted their location data (`lat`, `lon`) in the past 45 seconds.
 
 ### Get prediction
@@ -111,9 +111,9 @@ GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=20
             "predicted_date": "2020-08-19T17:07:33.478200Z"
         }
     ```  
-    `predicted_value` represents the predicted number of devices to be inside the perimeter of a circle
+    `predicted_value` - represents the predicted number of devices (users) to be inside the perimeter of a circle
     of radius `11` meters and the center at `44.4133671, 26.1630280` at date `2020-08-19T17:07:33.478200Z`  
-    `predicted_date` represents the future date for which the prediction has been made.
+    `predicted_date` - represents the future date for which the prediction has been made.
 
 
 ### Post device location
@@ -138,7 +138,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
     **Code:** 200 OK  
     **Content:**   
    
-##Error Responses
+##Error Responses  
 **Code:** 403 FORBIDDEN <br />
 **Content:**   
 ```json
