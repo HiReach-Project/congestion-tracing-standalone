@@ -137,7 +137,8 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
         
     **Code:** 200 OK  
     **Content:**   
-   
+
+
 ##Error Responses  
 **Code:** 403 FORBIDDEN <br />
 **Content:**   
