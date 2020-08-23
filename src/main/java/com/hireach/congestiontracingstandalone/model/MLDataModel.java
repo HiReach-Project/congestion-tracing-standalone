@@ -13,7 +13,7 @@ import java.time.OffsetDateTime;
 @Builder
 public class MLDataModel {
 
-    private OffsetDateTime dateRounded;
+    private OffsetDateTime timestamp;
     private Integer devices;
 
 }
