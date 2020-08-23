@@ -23,7 +23,7 @@ create database "database_name" owner "database_owner";
 ```
 Connect to the created database:
 ```bash
-\c congestion_tracing
+\c database_name
 ```
 Create PostGIS extension:
 ```sql
@@ -53,15 +53,22 @@ To authenticate an API request, you should append your API key as a GET paramete
 ```http
 GET /api/congestion/?key=1234567890
 ```
+**Note**: for security reasons there is NO default api key added in the database. For testing the API, a hashed key must be manually added,
+ after running the container, as a SHA3_256 encoded string into the `company` table.  
+ The hash can be obtained easily from [here](https://md5calc.com/hash/sha3-256/1234567890).  
+ Example adding the SHA3_256 encoded hash of `1234567890` key in the database:
+```sql
+insert into company values(1, 'your_company_name', '01da8843e976913aa5c15a62d45f1c9267391dcbd0a76ad411919043f374a163');
+``` 
 ## Endpoints
 ### Get congestion
 ```http
-GET /api/congestion/?key=1234567890&lat=44.348732&lon=26.104334&radius=10
+GET /api/congestion?key=1234567890&lat=44.348732&lon=26.104334&radius=10
 ```
 *  **URL Params**
 
    **Required:**   
-   `key=[integer]` - Authorization key.  
+   `key=[string]` - Authorization key.  
    `lat=[numeric]` - Latitude. Constraints: `-90.0 < lat < 90.0`  
    `lon=[numeric]` - Longitude. Constraints: `-180.0 < lat < 180.0`  
    `radius=[numeric]` - Distance in meters representing how big the perimeter to be when querying for active devices. Must be a positive number. 
@@ -72,7 +79,7 @@ GET /api/congestion/?key=1234567890&lat=44.348732&lon=26.104334&radius=10
 
     **Sample call:**
     ```shell script
-    curl --request GET http://localhost:8080/api/congestion/?key=1234567890&lat=44.348732&lon=26.104334&radius=12.5&seconds_ago=45
+    curl --request GET 'http://localhost:8080/api/congestion?key=1234567890&lat=44.348732&lon=26.104334&radius=12.5&seconds_ago=45'
     ```
    **Success Response:**
         
@@ -88,7 +95,7 @@ GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=20
 *  **URL Params**
 
    **Required:**   
-   `key=[integer]` - Authorization key.  
+   `key=[string]` - Authorization key.  
    `lat=[numeric]` - Latitude. Constraints: `-90.0 < lat < 90.0`  
    `lon=[numeric]` - Longitude. Constraints: `-180.0 < lat < 180.0`  
    `prediction_date=[timestamp]` - A future timestamp for which you want the congestion prediction to be made. The timestamp must use the ISO 8601 standard.
@@ -99,7 +106,7 @@ GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=20
 
     **Sample call:**
     ```shell script
-    curl --request GET http://localhost:8080/api/predict/?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z&radius=11 
+    curl --request GET 'http://localhost:8080/api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z&radius=11' 
     ```
    **Success Response:**
         
@@ -118,12 +125,12 @@ GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=20
 
 ### Post device location
 ```http
-POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9-1c74-4ee0-9240-bec88dbcdea7
+POST /api/location?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9-1c74-4ee0-9240-bec88dbcdea7
 ```
 *  **URL Params**
 
    **Required:**   
-   `key=[integer]` - Authorization key.  
+   `key=[string]` - Authorization key.  
    `lat=[numeric]` - Latitude. Constraints: `-90.0 < lat < 90.0`  
    `lon=[numeric]` - Longitude. Constraints: `-180.0 < lat < 180.0`  
    `device_id=[string]` - Every device which posts its location to the API must be uniquely identified. We recommend using a Version 4 UUID generator.
@@ -131,7 +138,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
    
     **Sample call:**
     ```shell script
-    curl --request POST http://localhost:8080/api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9-1c74-4ee0-9240-bec88dbcdea7
+    curl --request POST 'http://localhost:8080/api/location?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9-1c74-4ee0-9240-bec88dbcdea7'
     ```
    **Success Response:**
         
@@ -140,7 +147,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
 
 
 ## Error Responses  
-**Code:** 403 FORBIDDEN <br />
+**Code:** 403 FORBIDDEN  
 **Content:**   
 ```json
 {
@@ -151,7 +158,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
     "path": "/api/location"
 }
 ```
-**Code:** 429 TOO MANY REQUESTS <br />
+**Code:** 429 TOO MANY REQUESTS  
 **Content:**   
 ```json
 {
@@ -162,7 +169,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
     "path": "/api/location"
 }
 ```
-**Code:** 400 BAD REQUEST <br />
+**Code:** 400 BAD REQUEST  
 **Content:**   
 ```json
 {
@@ -173,7 +180,7 @@ POST /api/location/?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc
     "path": "/api/location"
 }
 ```
-**Code:** 500 INTERNAL SERVER ERROR <br />
+**Code:** 500 INTERNAL SERVER ERROR  
 **Content:**   
 ```json
 {

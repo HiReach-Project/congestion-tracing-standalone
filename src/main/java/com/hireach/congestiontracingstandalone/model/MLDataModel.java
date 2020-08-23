@@ -14,6 +14,6 @@ import java.time.OffsetDateTime;
 public class MLDataModel {
 
     private OffsetDateTime timestamp;
-    private Integer devices;
+    private Integer value;
 
 }

@@ -34,6 +34,9 @@ public class DeviceLocationHistoryService {
     @Value("${mlservice.url}")
     private String ML_SERVICE_URL;
 
+    @Value("${mlservice.access.key}")
+    private String ML_ACCESS_KEY;
+
     private final WebClient webClient;
     private final DeviceLocationHistoryRepository deviceLocationHistoryRepository;
     private final DeviceLocationHistoryDao deviceLocationHistoryDao;
@@ -79,7 +82,7 @@ public class DeviceLocationHistoryService {
         try {
             return webClient
                     .post()
-                    .uri(ML_SERVICE_URL + "/predict?prediction_date=" + predictionDate)
+                    .uri(ML_SERVICE_URL + "/predict?key=" + ML_ACCESS_KEY + "&prediction_date=" + predictionDate)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(deviceLocationHistory))
                     .retrieve()
