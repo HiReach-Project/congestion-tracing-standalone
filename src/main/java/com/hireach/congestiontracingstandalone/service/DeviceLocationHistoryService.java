@@ -75,14 +75,44 @@ public class DeviceLocationHistoryService {
     public String getPrediction(double lat, double lon, double radius, Instant predictionDate) {
         Point point = createPoint(lat, lon);
 
-        LOG.debug("Getting history for point lon " + lon + ", lat " + lat);
-        List<MLDataModel> deviceLocationHistory = deviceLocationHistoryDao.getHistory(point, radius);
+        String response = sendPredictRequest(lat, lon, radius, predictionDate);
+        if (response.equalsIgnoreCase("not cached")) {
+            LOG.debug("Getting history for point lon " + lon + ", lat " + lat);
+            List<MLDataModel> deviceLocationHistory = deviceLocationHistoryDao.getHistory(point, radius);
+            response = sendPredictRequest(lat, lon, radius, predictionDate, deviceLocationHistory);
+        }
+        return response;
+
+    }
+
+    private String sendPredictRequest(double lat, double lon, double radius, Instant predictionDate) {
+        String predictUrl = buildRequestUrl(lat, lon, radius, predictionDate);
 
         LOG.debug("Sending request to the prediction service...");
         try {
             return webClient
                     .post()
-                    .uri(ML_SERVICE_URL + "/predict?key=" + ML_ACCESS_KEY + "&prediction_date=" + predictionDate)
+                    .uri(predictUrl)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .block();
+        } catch (WebClientResponseException e) {
+            LOG.error("Something went wrong on the prediction service!");
+            throw e;
+        } catch (Exception e) {
+            LOG.error("Failed to connect to the prediction service! Make sure the ML service is running and can be accessed via network calls.");
+            throw e;
+        }
+    }
+
+    private String sendPredictRequest(double lat, double lon, double radius, Instant predictionDate,
+                                      List<MLDataModel> deviceLocationHistory) {
+        String predictUrl = buildRequestUrl(lat, lon, radius, predictionDate);
+
+        try {
+            return webClient
+                    .post()
+                    .uri(predictUrl)
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(BodyInserters.fromValue(deviceLocationHistory))
                     .retrieve()
@@ -95,6 +125,21 @@ public class DeviceLocationHistoryService {
             LOG.error("Failed to connect to the prediction service! Make sure the ML service is running and can be accessed via network calls.");
             throw e;
         }
+    }
+
+
+    private String buildRequestUrl(double lat, double lon, double radius, Instant predictionDate) {
+        return ML_SERVICE_URL +
+                "/predict?key=" +
+                ML_ACCESS_KEY +
+                "&prediction_date=" +
+                predictionDate +
+                "&lat=" +
+                lat +
+                "&lon=" +
+                lon +
+                "&radius=" +
+                radius;
     }
 
 }
