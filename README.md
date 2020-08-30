@@ -12,6 +12,8 @@ By using this API you can:
  - plan a route avoiding crowded buss stations
  - notify your users when approaching crowded areas
  - predict future congestion
+## High-level architecture diagram
+![standalone-diagram](https://user-images.githubusercontent.com/34125719/91659606-7205b180-ead9-11ea-8396-f763c1493ccb.png)
 ## Installation
 ### Postgres database
 Tested with: PostgreSQL 12.2 and PostGIS 3.0.0 extension.
@@ -38,9 +40,14 @@ Build docker container:
 ```bash
 docker build -t congestion_tracing .
 ```
-Run container:
+Run the container:
 ```bash
-docker run --network=host congestion_tracing
+docker run --network=host \
+-e SERVER_PORT=8080 \
+-e SPRING_DATASOURCE_USERNAME=database_owner \
+-e SPRING_DATASOURCE_PASSWORD=database_owner_password \
+-e SPRING_DATASOURCE_URL=jdbc:postgresql://your_database_server_url:5432/database_name \
+congestion_tracing
 ```
 ### Machine Learning prediction service
 The machine learning part is build as a separate service/API. The `/prediction` endpoint of this API will not work if the prediction service is not running.
@@ -90,15 +97,15 @@ GET /api/congestion?key=1234567890&lat=44.348732&lon=26.104334&radius=10
 
 ### Get prediction
 ```http
-GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z
+GET /api/prediction?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z
 ```
 *  **URL Params**
 
    **Required:**   
    `key=[string]` - Authorization key.  
+   `prediction_date=[timestamp]` - A future timestamp for which you want the congestion prediction to be made. The timestamp must use the ISO 8601 standard.  
    `lat=[numeric]` - Latitude. Constraints: `-90.0 < lat < 90.0`  
    `lon=[numeric]` - Longitude. Constraints: `-180.0 < lat < 180.0`  
-   `prediction_date=[timestamp]` - A future timestamp for which you want the congestion prediction to be made. The timestamp must use the ISO 8601 standard.
    
     **Optional:**  
     
@@ -106,7 +113,7 @@ GET /api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=20
 
     **Sample call:**
     ```shell script
-    curl --request GET 'http://localhost:8080/api/predict?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z&radius=11' 
+    curl --request GET 'http://localhost:8080/api/prediction?key=1234567890&lat=44.4133671&lon=26.1630280&prediction_date=2020-08-19T17:07:33.4782Z&radius=11' 
     ```
    **Success Response:**
         
@@ -146,7 +153,18 @@ POST /api/location?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9
     **Content:**   
 
 
-## Error Responses  
+## Error Responses 
+**Code:** 400 BAD REQUEST  
+**Content:**   
+```json
+{
+    "timestamp": "2020-08-22T13:21:05.045562Z",
+    "status": 400,
+    "error": "Bad Request",
+    "message": "lon should be of type double",
+    "path": "/api/location"
+}
+``` 
 **Code:** 403 FORBIDDEN  
 **Content:**   
 ```json
@@ -166,17 +184,6 @@ POST /api/location?key=1234567890&lat=44.348732&lon=26.104334&device_id=6601ebc9
     "status": 429,
     "error": "Too Many Requests",
     "message": "You have exhausted the API Request Quota.",
-    "path": "/api/location"
-}
-```
-**Code:** 400 BAD REQUEST  
-**Content:**   
-```json
-{
-    "timestamp": "2020-08-22T13:21:05.045562Z",
-    "status": 400,
-    "error": "Bad Request",
-    "message": "lon should be of type double",
     "path": "/api/location"
 }
 ```
