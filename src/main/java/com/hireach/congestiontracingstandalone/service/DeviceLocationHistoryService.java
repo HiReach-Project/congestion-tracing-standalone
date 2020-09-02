@@ -130,7 +130,7 @@ public class DeviceLocationHistoryService {
 
     private String buildRequestUrl(double lat, double lon, double radius, Instant predictionDate) {
         return ML_SERVICE_URL +
-                "/predict?key=" +
+                "/prediction?key=" +
                 ML_ACCESS_KEY +
                 "&prediction_date=" +
                 predictionDate +
