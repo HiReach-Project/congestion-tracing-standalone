@@ -1,6 +1,5 @@
 # Congestion API  
-This is a REST API built to track congestion spots and crowded areas.
-For the API to work it needs to get real-time location data from mobile devices.
+This is a REST API built to track congestion spots and crowded areas using real-time location data from mobile devices.
 ##### Use case:
 You have a mobility mobile app with a large user base. 
 The mobile app, installed on a user device, will send location data (latitude, longitude) to the API.
