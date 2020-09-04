@@ -8,7 +8,7 @@ The API can also make future predictions based on history data using a Machine L
 
 By using this API you can:
  - show on a map crowded areas
- - plan a route avoiding crowded buss stations
+ - plan a route avoiding crowded bus stations
  - notify your users when approaching crowded areas
  - predict future congestion
 ## High-level architecture diagram
