@@ -59,7 +59,7 @@ To authenticate an API request, you should append your API key as a GET paramete
 ```http
 GET /api/congestion/?key=1234567890
 ```
-**Note**: for security reasons there is NO default api key added in the database. For testing the API, a hashed key must be manually added,
+**Note**: for security reasons there is NO default api key added into the database. For testing the API, a hashed key must be manually added,
  after running the container, as a SHA3_256 encoded string into the `company` table.  
  The hash can be obtained easily from [here](https://md5calc.com/hash/sha3-256/1234567890).  
  Example adding the SHA3_256 encoded hash of `1234567890` key in the database:
