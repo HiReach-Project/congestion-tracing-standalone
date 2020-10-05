@@ -51,7 +51,7 @@ congestion_tracing
 ```
 ### Machine Learning prediction service
 The machine learning part is build as a separate service/API. The `/prediction` endpoint of this API will not work if the prediction service is not running.
-To run the prediction service see: https://github.com/cod-r/ml-congestion-prediction
+To run the prediction service see: https://github.com/HiReach-Project/ml-congestion-prediction
 
 # API specification
 ## Authorization
